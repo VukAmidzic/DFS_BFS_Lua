@@ -93,6 +93,48 @@ local function DFS(curr_x, curr_y, board, goal_x, goal_y, start_x, start_y)
     return false
 end
 
+--DFS function
+local function BFS(curr_x, curr_y, board, goal_x, goal_y, start_x, start_y) 
+    q = {{curr_y, curr_x}}
+    
+    printBoard(board)
+    sleep(0.1)
+    os.execute("clear")
+    
+    while #q ~= 0 do
+        printBoard(board)
+        sleep(0.1)
+        os.execute("clear")
+      
+        x = q[#q][2]
+        y = q[#q][1]
+        table.remove(q)
+        
+        dx = {1, 0, -1, 0}
+        dy = {0, 1, 0, -1}
+        
+        for i = 1,#dx do
+            new_x = x + dx[i]
+            new_y = y + dy[i]
+            if (board[new_y][new_x] ~= VISITED and board[new_y][new_x] ~= WALL) then
+                table.insert(q, 1, {new_y, new_x})
+                board[new_y][new_x] = VISITED
+            end
+            
+            board[start_y][start_x] = START
+            board[goal_y][goal_x] = END
+            
+            for j = 1,#q do
+                if (q[j][1] == goal_y and q[j][2] == goal_x) then
+                    return true
+                end
+            end
+        end
+    end
+    
+    return false
+end
+
 function main()
     local board = makeBoard()
     
@@ -134,6 +176,7 @@ function main()
     else
       print("No path found...")
     end
+    printBoard(board)
     end_time = os.clock()
     
     print("Time to find a path: "..(end_time - start_time).."s")
